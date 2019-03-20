@@ -1,0 +1,104 @@
+class data{
+    //sensor values output z
+    public int x0[]=new int[5];public int x1[]=new int[5];public int x2[]=new int[5];public int z[]=new int[5];
+    //learning rate r
+    public double r=0.1;
+    public double s[]=new double[5];//sum
+    public int n;//the output found out using the threshold value
+    public int e[]=new int[5];//the error
+    //weights
+    public double w0[]=new double[5];public double w1[]=new double[5];public double w2[]=new double[5];
+    //xi*wi=ci
+    public double c0[]=new double[5];public double c1[]=new double[5];public double c2[]=new double[5];
+    public void x(){//initialising the sensor arrays
+           x0[1]=1;x0[2]=1;x0[3]=1;x0[4]=1;
+           x1[1]=0;x1[2]=0;x1[3]=1;x1[4]=1;
+           x2[1]=0;x2[2]=1;x2[3]=0;x2[4]=1;
+           z[1]=1;z[2]=1;z[3]=1;z[4]=0;
+    }
+    public void w(){
+        w0[1]=0.3;w0[2]=0.4;w0[3]=0.5;w0[4]=0.5;
+        w1[1]=0.1;w1[2]=0.1;w1[3]=0.1;w1[4]=0.1;
+        w2[1]=0.1;w2[2]=0.1;w2[3]=0.2;w2[4]=0.2;
+    }
+    public void xiwi(){//the xi*wi and the sum of xi*wi's
+        for(int i=1;i<=4;i++){
+            c0[i]=w0[i]*x0[i];
+            c1[i]=w0[i]*x1[i];
+            c2[i]=w0[i]*x2[i];
+            s[i]=c0[i]+c1[i]+c2[i];
+        }
+    }
+    public void display(){
+        for(int i=1;i<=4;i++){
+            System.out.println("value at "+i+" is "+w0[i]+" , "+w1[i]+" , "+w2[i]+" , error is "+e[i]+" ,sum is  "+s[i]);
+        }
+    }
+    public void display2(){
+        for(int i=1;i<=4;i++){
+            System.out.println("value at "+i+" is "+c0[i]+" , "+c1[i]+" , "+c2[i]);
+        }
+    }
+    //the classification value (like output 1 if > 0.5)
+    public void N(){
+        for (int i=1;i<=4;i++){
+            if(s[i]>0.5){
+                n=1;
+            }
+            else{
+                n=0;
+            }
+            System.out.println(n);
+            e[i]=(z[i]-n);//error calculation
+        }
+    }
+    public void update(){
+        for (int i=1;i<=4;i++){
+            double c=r*e[i];//c is correction
+            //weights updated
+            w0[i]=(w0[i]+(c*x0[i]));
+            w1[i]=(w1[i]+(c*x1[i]));
+            w2[i]=(w2[i]+(c*x2[i]));
+        }
+    }
+}
+public class NorGate {
+    private static data d=new data();
+    public static void main(String [] args){
+        d.x();//initialise the value of x's and y
+        d.w();//initialise the value of weights
+        int count=0;
+        boolean flag=false;
+        for(int i=0;i<100;i++){
+            count++;
+            d.xiwi();//calculate the hypothesis
+            d.N();//calculate the output from the hypothesis and the error
+                if(d.e[1]==0 && d.e[2]==0 && d.e[3]==0&& d.e[4]==0){
+                    flag=true;
+                }
+//                else if (d.e[i]==-1){
+//                    d.e[i]=1;
+//                }
+                else {
+                    flag = false;
+                }
+
+            if(flag){
+                System.out.println("hard work over");
+                d.display();
+                break;
+            }
+            else {
+               // d.display();
+                d.update();//updating the weight
+                d.display();
+            }
+        }
+        System.out.println(count);
+        //d.display();
+    }
+}
+/*All Rights Reserved
+Nongjaimayum Annas khan
+Husband of Ph Tabasum Sahani
+*/
